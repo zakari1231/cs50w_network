@@ -1,0 +1,101 @@
+{% extends "network/layout2.html" %} {% load static %}{% block body %}
+<h2>All Posts</h2>
+<div class="card">
+    <div class="card-body my-card">
+        Add New Post
+        <textarea class="mt-2 form-control" id="add-text" rows="3"></textarea>
+        <div class="mt-2 d-flex justify-content-end">
+            <button type="submit" id="add-btn" class="btn btn-success">Post</button>
+        </div>
+    </div>
+</div>
+<div id="root"></div>
+{% for post in posts %}
+<div class="card mb-3 mr-5 ml-5" style="border-radius: 8px; border-color: transparent; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);">
+    <div class="card-body" style="padding: 12px 16px 5px;">
+
+        {# Post header displaying post user's full name, username, profile picture, edit button, creation date #}
+        <div class="post-header row" style="margin-bottom: 6px">
+            <div class="col-sm-2 post-profile-pic" style="
+                    background-image: #">
+            </div>
+            <div class="col-sm-10" style="padding: 0">
+                <a class="card-title" href="{% url 'user_detail' post.user.username %}">
+                    <strong>{{ post.user.first_name }} {{ post.user.last_name }}</strong>
+                </a>
+                <a href="{% url 'user_detail' post.user.username %}" class="text-muted no-hover-underline" style="font-size: 0.9rem">{{ post.user.username }}</a> {% if user == post.user %}
+                <button style="float: right; font-size: small; padding: 4px 10px" data-postid="{{ post.id }}" class="btn edit-btn edit">Edit
+                    </button> {% endif %}
+
+                <p style="margin-bottom: 3px; line-height: 18px"><small class="post-date">Created
+                    at {{ post.created_at }}</small></p>
+            </div>
+        </div>
+
+        {# Post content #}
+        <div class="card-text content" id="content{{ post.id }}" style="font-size: 0.9rem; margin-bottom: .5rem">{{ post.content }}</div>
+
+        {# Post Likes #}
+        <div><span id="likes{{ post.id }}" style="font-size: 0.95rem; margin-left: .5rem; color: #65676B">{{ post.likes.all.count }}</span></div>
+        <hr style="margin-bottom: 3px; margin-top: 8px"> {# Post interactive buttons for liking, commenting, and sharing #}
+        <div style="text-align: center">
+            {% if user.is_authenticated %}
+            <button data-postid="{{ post.id }}" class="btn post-btn like" style="width: 32.65%; display: inline-block">
+                    {% if user in post.likes.all %}
+                        <div style="color: rgb(32, 120, 244);">
+                            <i class="mr-2 fas fa-thumbs-up"></i>Unlike
+                        </div>
+                    {% else %}
+                        <i class="mr-2 far fa-thumbs-up"></i>Like
+                    {% endif %}
+                </button> {% comment %} <button class="btn post-btn" style="width: 32.65%; display: inline-block"><i class="mr-2 far fa-comment-alt"></i>Comment</button>
+            <button class="btn post-btn" style="width: 32.65%; display: inline-block"><i class="mr-2 far fa-share-square"></i>Share</button> {% endcomment %} {% else %}
+            <a class="btn post-btn like" style="width: 32.65%; display: inline-block" href="{% url 'login' %}"><i class="mr-2 far fa-thumbs-up"></i>Like</a> {% comment %}
+            <a class="btn post-btn" style="width: 32.65%; display: inline-block" href="{% url 'login' %}"><i class="mr-2 far fa-comment-alt"></i>Comment</a>
+            <a class="btn post-btn" style="width: 32.65%; display: inline-block" href="{% url 'login' %}"><i class="mr-2 far fa-share-square"></i>Share</a> {% endcomment %} {% endif %}
+
+        </div>
+    </div>
+</div>
+
+{% comment %}
+<script src="{% static 'network/posts.js' %}"></script> {% endcomment %} {% endfor %}
+<div class="d-flex justify-content-end my-3">
+    <nav aria-label="Page navigation ">
+        <ul class="pagination">
+            {% if posts.has_previous %}
+            <li class="page-item">
+                <li class="page-item">
+                    <a class="page-link" href="?page={{posts.previous_page_number}}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                </li>
+                {%else%}
+                <li class="page-item">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    {%endif%} {% if posts.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{posts.next_page_number}}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                    {%else%}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                    {%endif%}
+        </ul>
+    </nav>
+</div>
+{% endblock %} {% block script %}
+<script src="{% static 'network/addpost.js'%}"></script> {% endblock %}

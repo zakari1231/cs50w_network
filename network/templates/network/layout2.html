@@ -1,0 +1,81 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>{% block title %}Social Network{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
+    <link href="{% static 'network/styles.css' %}" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 sidebar">
+                <div class="sidebar-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="" style="font-size: 27px; color: rgba(29,161,242,1.00);"><i class="mr-4 fab fa-twitter"></i></a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="allposts" class="nav-link" href="{% url 'allposts' %}"><i class="mr-4 fas fa-home"></i>All Posts</a>
+                        </li>
+                        {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a id="following-link" class="nav-link" href="{% url 'dashboard' %}"><i class="mr-4 fas fa-hashtag"></i>Your Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="following-link" class="nav-link" href="{% url 'following' %}"><i class="mr-4 fas fa-hashtag"></i>Following</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a id="profile-link" class="nav-link" href="{% url 'profile' user %}"><i class="mr-4 far fa-user "></i>Profile</a>
+                        </li>
+                        <li class="nav-item ">
+                            <a id="profile-link " class="nav-link " href="{% url 'edit_p' %}"><i class="mr-4 far fa-user "></i>edit your Profile</a>
+                        </li>
+                        <li class="nav-item mt-3 ">
+                            <a class="nav-link btn register-btn " style="width: 87%; font-size: 16px; height: 50px; line-height: 35px " href="{% url 'logout' %} ">Log Out</a>
+
+                        </li>
+                        <div class=" bottom-user-info " style="margin-top: 100px; line-height: 20px; ">
+
+                            <div style="font-size: 1rem; ">{{ user.first_name }} {{ user.last_name }}</div>
+                            <div class="text-muted " style="display:inline-block; font-size: 19px; font-weight: normal ">{{ user.username }}</div>
+                        </div>
+                        {% else %}
+
+                        <li class="nav-item mt-3 ">
+                            <a class="nav-link btn register-btn " style="width: 87%; font-size: 16px; height: 50px; line-height: 35px " href="{% url 'login' %} ">Log in</a>
+
+                        </li>
+                        <li class="nav-item mt-3 ">
+                            <a class="nav-link btn register-btn " style="width: 87%; font-size: 16px; height: 50px; line-height: 35px " href="{% url 'register' %} ">Register</a>
+
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="body col-md-6 " style="padding: 0 ">
+                <div class="top-nav navbar navbar-expand-md " style="position: sticky; top: 0; z-index: 1030 ">
+                    <span id="top-title " class="navbar-brand "></span>
+                </div>
+                {% if messages %}
+                <ul class="messages ">
+                    {% for message in messages %}
+                    <li class="{{ message.tags }} ">
+                        {{ message|safe }}
+                        <a href="# " class="close ">x</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %} {% block body %} {% endblock %}
+            </div>
+</body>
+<script src="{% static 'network/script.js'%}"></script>
+{% block script %} {% endblock %}
+
+</html>
